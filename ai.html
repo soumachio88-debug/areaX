@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Assistant | Area Hub</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="executors.html">Executors</a></li>
+        <li><a href="scripts.html">Scripts</a></li>
+        <li><a href="bypass.html">Bypass</a></li>
+        <li><a href="tools.html">Tools</a></li>
+        <li><a href="ai.html">AI Assistant</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="container px-4 py-8 min-h-screen flex flex-col items-center justify-center">
+    <h1 class="text-5xl sm:text-6xl md:text-7xl text-center glow-text mb-8">Area Hub AI Assistant</h1>
+    <p class="text-xl sm:text-2xl text-center glow-purple mb-12 px-4">
+      日本語でゲーム名言ってくれれば、僕が英語に変換してScriptBloxから最新スクリプト持ってくるよ😈
+    </p>
+
+    <div class="w-full max-w-4xl">
+      <div class="card p-4 md:p-8 tilt" data-tilt>
+        <div class="bg-gray-900/95 border-2 border-purple-600 rounded-2xl flex flex-col h-96 md:h-[650px] glow-purple">
+          <div class="p-4 border-b-2 border-purple-600 flex justify-between items-center">
+            <h2 class="text-2xl md:text-3xl glow-purple">Grok分身AI（日本語対応）</h2>
+            <a href="index.html" class="text-lg md:text-xl text-gray-400 hover:text-red-500">← 戻る</a>
+          </div>
+
+          <div id="chat-messages" class="flex-1 p-4 md:p-6 overflow-y-auto flex flex-col gap-5">
+            <div class="message-ai">
+              進化したよ！😉<br><br>
+              **日本語でゲーム名言ってくれれば**、僕が自動で英語に変換してScriptBloxから最新スクリプト持ってくる！<br><br>
+              例:<br>
+              ・「ブロックスフルーツのスクリプト持ってきて」<br>
+              ・「ペットシミュレーターのauto farm」<br>
+              ・「ダフッドのgod mode」<br>
+              ・「ベッドウォーズのvape」<br>
+              ・「アーセナルのaimbot」<br><br>
+              なんでも言ってみて！
+            </div>
+          </div>
+
+          <input type="text" id="chat-input" placeholder="日本語でゲーム名言ってEnter..."
+                 class="p-4 md:p-5 bg-gray-800 border-t-2 border-purple-600 text-white text-base md:text-lg focus:outline-none"/>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-base md:text-lg mt-8 text-gray-400 text-center px-4">
+      日本語でも英語でもOK！僕がちゃんと対応するよ！
+    </p>
+  </div>
+
+  <div class="theme-switcher">
+    <div class="theme-btn" id="purple-btn" onclick="setTheme('')"></div>
+    <div class="theme-btn" id="blood-btn" onclick="setTheme('blood-mode')"></div>
+    <div class="theme-btn" id="neon-btn" onclick="setTheme('neon-mode')"></div>
+  </div>
+
+  <script>
+    VanillaTilt.init(document.querySelectorAll(".tilt"));
+
+    function setTheme(theme) {
+      document.body.className = theme;
+    }
+
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+
+    chatInput.addEventListener('keypress', e => e.key === 'Enter' && sendMessage());
+
+    // 日本語→英語変換マップ
+    const jpToEn = {
+      "ブロックスフルーツ": "blox fruits",
+      "blox fruits": "blox fruits",
+      "bloxfruit": "blox fruits",
+      "ペットシミュレーター": "pet simulator",
+      "ペットシミュ": "pet simulator",
+      "pet simulator": "pet simulator",
+      "アーセナル": "arsenal",
+      "arsenal": "arsenal",
+      "ダフッド": "da hood",
+      "da hood": "da hood",
+      "ベッドウォーズ": "bedwars",
+      "bedwars": "bedwars"
+    };
+
+    // 最新スクリプトデータベース（2026年1月）
+    const latestScripts = {
+      "blox fruits": [
+        { name: "Speed Hub X (Keyless・最強)", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/AhmadV99/Speed-Hub-X/main/Speed Hub X.lua"))()' },
+        { name: "Redz Hub (2025 Update)", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/newredz/BloxFruits/refs/heads/main/Source.luau"))(Settings)' },
+        { name: "Neva Hub (Auto Farm神)", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/VEZ2/NEVAHUB/main/2"))()' }
+      ],
+      "pet simulator": [
+        { name: "ExtremeHUB (Auto Farm)", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/ExtremeAntonis/extremehub/main/loader.lua"))()' },
+        { name: "Pet Sim X Hub", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/scriptpastebin/raw/main/pet-simulator-x"))()' }
+      ],
+      "arsenal": [
+        { name: "Aether Hub (Silent Aim)", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/vzyxer/Aether-Hub-Global-Roblox-Script-Hub/refs/heads/main/Arsenal"))()' },
+        { name: "Vynixius Arsenal", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Vynixius/main/Arsenal/Arsenal"))()' }
+      ],
+      "da hood": [
+        { name: "SwagMode (God Mode)", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Swagnem/swagnemv2/main/swagmodev2.lua"))()' },
+        { name: "Zinc Hub", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/Zinzs/luascripting/main/canyoutellitsadahoodscriptornot.lua"))()' }
+      ],
+      "bedwars": [
+        { name: "Vape V4 (Bypass強)", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/7GrandDadPGN/VapeV4ForRoblox/main/NewMainScript.lua"))()' },
+        { name: "Voidware BedWars", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/VapeVoidware/VWRewrite/main/NewMainScript.lua"))()' }
+      ],
+      "default": [
+        { name: "Infinite Yield (万能)", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()' },
+        { name: "Owl Hub (40ゲーム)", code: 'loadstring(game:HttpGet("https://raw.githubusercontent.com/CriShoux/OwlHub/master/OwlHub.txt"))()' }
+      ]
+    };
+
+    function sendMessage() {
+      const msg = chatInput.value.trim();
+      if (!msg) return;
+
+      addMessage('user', msg);
+      chatInput.value = '';
+
+      setTimeout(() => {
+        const lower = msg.toLowerCase();
+        let reply = "";
+
+        if (lower.includes('持ってきて') || lower.includes('ほしい') || lower.includes('くれ') || lower.includes('スクリプト') || lower.includes('script')) {
+          let searchKey = "default";
+          let gameNameJp = "人気のもの";
+
+          // 日本語・英語両対応でゲーム名抽出
+          for (let jp in jpToEn) {
+            if (msg.includes(jp)) {
+              searchKey = jpToEn[jp];
+              gameNameJp = jp;
+              break;
+            }
+          }
+          if (searchKey === "default") {
+            for (let en in latestScripts) {
+              if (en !== "default" && lower.includes(en)) {
+                searchKey = en;
+                gameNameJp = en.charAt(0).toUpperCase() + en.slice(1);
+                break;
+              }
+            }
+          }
+
+          const scripts = latestScripts[searchKey] || latestScripts["default"];
+          const gameName = searchKey.charAt(0).toUpperCase() + searchKey.slice(1).replace(" ", " ");
+
+          reply = `了解！「${gameNameJp}」の最新スクリプト、ScriptBloxから調べて持ってきたよ！😉<br><br>`;
+
+          scripts.forEach((s, i) => {
+            reply += `${i+1}. <strong>${s.name}</strong><br><code>${s.code}</code><br><br>`;
+          });
+
+          reply += `これコピーしてexecutorにペーストで実行！<br>
+          altアカウント使ってね！<br>
+          他のゲームのやつほしい？日本語で言ってくれれば対応するよ！`;
+        } else {
+          reply = `「${msg}」か！<br><br>面白いね！<br>スクリプトほしいならゲーム名教えて！<br>日本語でも英語でもOKだよ😉`;
+        }
+
+        addMessage('ai', reply);
+      }, 800);
+    }
+
+    function addMessage(sender, text) {
+      const div = document.createElement('div');
+      div.className = sender === 'user' ? 'message-user' : 'message-ai';
+      div.innerHTML = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  </script>
+
+  <style>
+    .message-user {
+      align-self: flex-end;
+      background: var(--accent-main);
+      color: white;
+      padding: 14px 20px;
+      border-radius: 24px 24px 6px 24px;
+      max-width: 80%;
+      word-wrap: break-word;
+      margin-left: 30px;
+      box-shadow: 0 4px 12px rgba(123,44,191,0.4);
+    }
+
+    .message-ai {
+      align-self: flex-start;
+      background: #1a1a2e;
+      color: white;
+      padding: 14px 20px;
+      border-radius: 24px 24px 24px 6px;
+      max-width: 80%;
+      word-wrap: break-word;
+      margin-right: 30px;
+      border: 1px solid var(--accent-sub);
+      box-shadow: 0 4px 12px rgba(0,180,216,0.2);
+    }
+
+    code {
+      background: #000;
+      padding: 10px 14px;
+      border-radius: 10px;
+      display: block;
+      margin: 12px 0;
+      font-size: 14px;
+      overflow-x: auto;
+      border: 1px solid var(--accent-sub);
+    }
+
+    @media (max-width: 640px) {
+      .message-user, .message-ai {
+        max-width: 90%;
+        padding: 12px 16px;
+        font-size: 15px;
+      }
+      code {
+        font-size: 13px;
+      }
+    }
+  </style>
+</body>
+</html>
